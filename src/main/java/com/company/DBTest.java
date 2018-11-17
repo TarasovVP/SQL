@@ -6,14 +6,13 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DBTest {
+    Properties props = getConnectionData();
+
+    String url = props.getProperty("db.url");
+    String user = props.getProperty("db.user");
+    String passwd = props.getProperty("db.passwd");
 
     public void addActor(String f_name, String l_name) {
-
-        Properties props = getConnectionData();
-
-        String url = props.getProperty("db.url");
-        String user = props.getProperty("db.user");
-        String passwd = props.getProperty("db.passwd");
 
         String insert = "insert into sakila.actor (first_name, last_name)" + "VALUES (?, ?)";
 
@@ -33,31 +32,47 @@ public class DBTest {
     }
     public void showAddress(int city_id) {
 
-        Properties props = getConnectionData();
-
-        String url = props.getProperty("db.url");
-        String user = props.getProperty("db.user");
-        String passwd = props.getProperty("db.passwd");
-
         String take = "select address, district, postal_code, phone from sakila.address where city_id = ?";
+        String address = "";
+        String district = "";
+        String postal_code = "";
+        String phone = "";
+
 
         try (Connection con = DriverManager.getConnection(url, user, passwd); PreparedStatement prpdSttmTake = con.prepareStatement(take)) {
 
             prpdSttmTake.setString(1, String.valueOf(city_id));
-
             ResultSet rs = prpdSttmTake.executeQuery();
-            if(rs.next()){
 
+            if(rs.next()){
+                address = rs.getString("address");
+                district = rs.getString("district");
+                postal_code = rs.getString("postal_code");
+                phone = rs.getString("phone");
             }
 
+            System.out.println("Для этого города адрес: " + address + ", район: " + district + ", почтовый индекс: " + postal_code + ", телефон: " + phone);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
+    public int getIdCity(String str){
+        int id = 0;
+        String take = "select city_id from sakila.city where city = ?";
+        try (Connection con = DriverManager.getConnection(url, user, passwd); PreparedStatement prpdSttmCity = con.prepareStatement(take)) {
 
-
+            prpdSttmCity.setString(1, str);
+            ResultSet rs = prpdSttmCity.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return id;
+    }
 
     private static Properties getConnectionData() {
 
