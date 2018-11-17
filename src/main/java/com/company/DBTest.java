@@ -6,13 +6,13 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DBTest {
-    Properties props = getConnectionData();
+    private Properties props = getConnectionData();
 
-    String url = props.getProperty("db.url");
-    String user = props.getProperty("db.user");
-    String passwd = props.getProperty("db.passwd");
+    private String url = props.getProperty("db.url");
+    private String user = props.getProperty("db.user");
+    private String passwd = props.getProperty("db.passwd");
 
-    public void addActor(String f_name, String l_name) {
+     void addActor(String f_name, String l_name) {
 
         String insert = "insert into sakila.actor (first_name, last_name)" + "VALUES (?, ?)";
 
@@ -30,7 +30,7 @@ public class DBTest {
         }
 
     }
-    public void showAddress(int city_id) {
+     void showAddress(int city_id) {
 
         String take = "select address, district, postal_code, phone from sakila.address where city_id = ?";
         String address = "";
@@ -58,7 +58,7 @@ public class DBTest {
 
     }
 
-    public int getIdCity(String str){
+    int getIdCity(String str){
         int id = 0;
         String take = "select city_id from sakila.city where city = ?";
         try (Connection con = DriverManager.getConnection(url, user, passwd); PreparedStatement prpdSttmCity = con.prepareStatement(take)) {
